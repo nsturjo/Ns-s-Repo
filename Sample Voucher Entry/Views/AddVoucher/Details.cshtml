@@ -1,0 +1,42 @@
+﻿@model Sample_Voucher_Entry.EDMX.tblVoucherMaster
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>tblVoucherMaster</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Voucher_No)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Voucher_No)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Voucher_Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Voucher_Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tblSupplier.Supplier_Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tblSupplier.Supplier_Name)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Voucher_Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

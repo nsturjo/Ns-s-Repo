@@ -1,0 +1,185 @@
+﻿@model Sample_Voucher_Entry.EDMX.tblVoucherMaster
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>tblVoucherMaster</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Voucher_Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Voucher_No, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Voucher_No, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Voucher_No, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Voucher_Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Voucher_Date, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Voucher_Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Supplier_Id, "Supplier_Id", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Supplier_Id", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Supplier_Id, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <br />
+        <br />
+
+        <div id="TextBoxContainer" style="padding-left:120px;">
+       
+        </div>
+
+        <input id="btnAdd" type="button" class="btn btn-default" value="Add Row" style="margin-left:567px;" onclick="AddTextBox()" />
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" style="margin-left:100px" class="btn btn-default btn-lg"  />
+                </div>
+            </div>
+        </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script src="~/Scripts/jquery-2.2.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.11.4.min.js"></script>
+
+<script type="text/javascript">
+
+    function GetDynamicTextBox(value0,value1,value2,value3) {
+        var div = $("<div />");
+
+        var textBox = $("<input />").attr("type", "hidden").attr("name", "DynamicTextBox");
+        textBox.val(value0);
+        div.append(textBox);
+
+        var textBox = $("<input />").attr("type", "textbox").attr("name", "DynamicTextBox").attr("placeholder", "Account No").attr("class", "autocomplete").prop("required", true).attr("title","Account Name");
+        textBox.val(value1);
+        div.append(textBox);
+
+        var textBox = $("<input />").attr("type", "textbox").attr("name", "DynamicTextBox").attr("placeholder", "Debit Amount").attr("title", "Debit Amount");
+        textBox.val(value2);
+        div.append(textBox);
+
+        var textBox = $("<input />").attr("type", "textbox").attr("name", "DynamicTextBox").attr("placeholder", "Credit Amount").attr("title", "Credit Amount");
+        textBox.val(value3);
+        div.append(textBox);
+
+        var button = $("<input />").attr("type", "button").attr("value", "Remove Row").attr("class", "btn btn-default");
+        button.attr("onclick", "RemoveTextBox(this)");
+        div.append(button);
+
+        return div;
+    }
+
+
+
+    function RemoveTextBox(button) {
+        $(button).parent().remove();
+    }
+
+    function AddTextBox() {
+        var div = GetDynamicTextBox(0,"","","");
+        $("#TextBoxContainer").append(div);
+
+        $(".autocomplete").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetVisitCustomer", "AddVoucher")',
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        keyword: request.term
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Name
+                            };
+                        }))
+                    },
+                    error: function () {
+                        alert('something went wrong !');
+                    }
+                })
+            },
+            messages: {
+                noResults: "",
+                results: ""
+            }
+        });
+    }
+
+    function AddTextBoxWithData(value0,value1,value2,value3) {
+        var div = GetDynamicTextBox(value0,value1, value2, value3);
+        $("#TextBoxContainer").append(div);
+
+        $("#DynamicTextBox").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetVisitCustomer", "AddVoucher")',
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        keyword: request.term
+                    },
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return {
+                                label: item.Name,
+                                value: item.Name
+                            };
+                        }))
+                    },
+                    error: function () {
+                        alert('something went wrong !');
+                    }
+                })
+            },
+            messages: {
+                noResults: "",
+                results: ""
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        var textBoxData = JSON.parse('@Html.Raw(HttpUtility.HtmlDecode(ViewBag.TextBoxData))');
+        var voucherItemNo = '@ViewBag.VoucherItemNo';
+
+        var x = 0;
+        for (var i = 1; i <= voucherItemNo; i++)
+        {
+            AddTextBoxWithData(textBoxData[x], textBoxData[x + 1], textBoxData[x + 2], textBoxData[x + 3]);
+            x = x + 4;
+        }
+
+    })
+
+</script>

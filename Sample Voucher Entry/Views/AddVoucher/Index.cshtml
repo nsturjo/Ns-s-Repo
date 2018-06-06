@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Sample_Voucher_Entry.EDMX.tblVoucherMaster>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Voucher_No)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Voucher_Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tblSupplier.Supplier_Name)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Voucher_No)
+        </td>   
+        <td>
+            @Html.DisplayFor(modelItem => item.Voucher_Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tblSupplier.Supplier_Name)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Voucher_Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Voucher_Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Voucher_Id })
+        </td>
+    </tr>
+}
+
+</table>
